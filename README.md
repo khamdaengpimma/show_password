@@ -4,7 +4,8 @@ Password Viewer Pro is a lightweight Google Chrome extension that helps you inst
 
 ## Features
 
-- **One-Click Visibility Toggle**: Instantly show or hide any password field by clicking the dynamically added 👁 button.
+- **One-Click Visibility Toggle**: Instantly show or hide any password field by clicking the dynamically added button. The icon dynamically switches between an open eye (👁) and a closed monkey (🙈) to indicate state.
+- **Smart Detection**: Automatically skips adding the toggle if the website already has a built-in "show/hide" password control, preventing duplicate and cluttered buttons.
 - **Works on Dynamic Pages**: Uses a MutationObserver to detect and attach the button to password fields even when they are loaded dynamically (e.g., in Single Page Applications like React, Angular, or Vue).
 - **Global On/Off Switch**: Comes with a simple popup menu to enable or disable the extension globally.
 - **Cross-Device Sync**: Your settings (enabled/disabled state) are synchronized across your devices using Chrome's synced storage.
@@ -24,7 +25,7 @@ As this extension is custom-built and hasn't been submitted to the Chrome Web St
 ## How It Works
 
 - **`manifest.json`**: Defines the extension's configuration, permissions (storage, all URLs), and points to the popup and content script.
-- **`content.js`**: Runs in the background of web pages you visit. It searches for elements with `type="password"`, wraps them, and injects the eye button next to them. It also listens for any new passwords added to the screen later.
+- **`content.js`**: Runs in the background of web pages you visit. It searches for elements with `type="password"`, intelligently checks if a visibility toggle already exists nearby, and if not, wraps the input and injects the dynamic toggle button. It also uses a MutationObserver to listen for any new passwords added to the screen later.
 - **`popup.html` & `popup.js`**: Provide the user interface when clicking the extension icon in the toolbar, giving you a master switch to toggle the extension on or off.
 
 ## Tech Stack
