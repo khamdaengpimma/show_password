@@ -7,13 +7,54 @@
 
     if (!settings.enabled) return;
 
+    function hasExistingToggle(input) {
+
+        const parent = input.parentElement;
+
+        if (!parent) return false;
+
+        // search nearby elements
+        const nearby = parent.querySelectorAll('button, span, div, svg, i');
+
+        for (const el of nearby) {
+
+            const text = (el.innerText || '').toLowerCase();
+            const cls = (el.className || '').toString().toLowerCase();
+            const aria = (el.getAttribute('aria-label') || '').toLowerCase();
+
+            // detect common show/hide password controls
+            if (
+                text.includes('show') ||
+                text.includes('hide') ||
+                text.includes('eye') ||
+                aria.includes('password') ||
+                cls.includes('eye') ||
+                cls.includes('toggle') ||
+                cls.includes('visibility')
+            ) {
+                return true;
+            }
+
+            // detect eye svg icon
+            if (el.tagName.toLowerCase() === 'svg') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     function addEyeButton(input) {
 
         if (input.dataset.eyeAdded) return;
 
+        // skip if website already has button
+        if (hasExistingToggle(input)) return;
+
         input.dataset.eyeAdded = "true";
 
         const wrapper = document.createElement('div');
+
         wrapper.style.position = 'relative';
         wrapper.style.display = 'inline-block';
         wrapper.style.width = input.offsetWidth + 'px';
@@ -27,20 +68,24 @@
         eye.type = 'button';
 
         eye.style.position = 'absolute';
-        eye.style.right = '5px';
+        eye.style.right = '8px';
         eye.style.top = '50%';
         eye.style.transform = 'translateY(-50%)';
         eye.style.border = 'none';
         eye.style.background = 'transparent';
         eye.style.cursor = 'pointer';
         eye.style.fontSize = '16px';
-        eye.style.zIndex = '9999';
+        eye.style.zIndex = '999999';
 
         eye.onclick = () => {
-            input.type =
-                input.type === 'password'
-                    ? 'text'
-                    : 'password';
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.innerHTML = '🙈';
+            } else {
+                input.type = 'password';
+                eye.innerHTML = '👁';
+            }
         };
 
         wrapper.appendChild(eye);
